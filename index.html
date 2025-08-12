@@ -20,12 +20,16 @@
             background-color: #1e293b; /* slate-800 */
             background-image: radial-gradient(circle at top left, rgba(51, 65, 85, 0.8), transparent 50%), radial-gradient(circle at bottom right, rgba(30, 41, 59, 0.8), transparent 50%);
         }
+        /* Ocultar elementos por defecto para evitar parpadeos */
+        .hidden-by-default {
+            display: none;
+        }
     </style>
 </head>
 <body class="dark-gradient-bg min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8">
 
     <!-- Ventana de Acceso -->
-    <div id="login-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-900 bg-opacity-90 backdrop-blur-sm">
+    <div id="login-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-900 bg-opacity-90 backdrop-blur-sm hidden-by-default">
         <div class="w-full max-w-sm p-8 bg-slate-800 rounded-2xl shadow-2xl text-center">
             <h2 class="text-3xl font-bold text-slate-100 mb-2">Acceso Parroquial</h2>
             <p class="text-slate-400 mb-6">Presiona para continuar</p>
@@ -37,7 +41,7 @@
     </div>
 
     <!-- Contenedor Principal (inicialmente oculto) -->
-    <div id="main-content" class="hidden w-full max-w-5xl mx-auto">
+    <div id="main-content" class="hidden-by-default w-full max-w-5xl mx-auto">
         <!-- Encabezado principal -->
         <header class="relative text-center mb-10">
             <h1 class="text-4xl sm:text-5xl font-bold text-slate-100">Parroquia San José</h1>
@@ -98,7 +102,7 @@
     </div>
     
     <!-- Visor de Módulos a pantalla completa (Iframe) -->
-    <div id="module-viewer" class="hidden fixed inset-0 z-50 flex flex-col bg-slate-900 p-4 gap-4">
+    <div id="module-viewer" class="hidden-by-default fixed inset-0 z-50 flex flex-col bg-slate-900 p-4 gap-4">
         <div class="flex-shrink-0 w-full text-left">
             <button onclick="goHome()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-5 rounded-lg transition-colors duration-300 shadow-md">
                 &larr; Volver al Inicio
@@ -111,7 +115,7 @@
     <script type="module">
         // Importar funciones de Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
         // Configuración de Firebase
         const firebaseConfig = {
@@ -136,6 +140,21 @@
         const moduleFrame = document.getElementById('module-frame');
         const dateTimeDisplay = document.getElementById('datetime-display');
 
+        // --- Manejador del estado de autenticación ---
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Usuario está logueado
+                loginOverlay.style.display = 'none';
+                mainContent.style.display = 'block';
+                moduleViewer.style.display = 'none'; // Asegurarse que el visor de módulo esté oculto
+            } else {
+                // Usuario no está logueado
+                loginOverlay.style.display = 'flex';
+                mainContent.style.display = 'none';
+                moduleViewer.style.display = 'none';
+            }
+        });
+
         /**
          * Inicia sesión con las credenciales predefinidas.
          */
@@ -149,8 +168,7 @@
 
             try {
                 await signInWithEmailAndPassword(auth, email, password);
-                loginOverlay.classList.add('hidden');
-                mainContent.classList.remove('hidden');
+                // onAuthStateChanged se encargará de mostrar/ocultar los elementos
             } catch (error) {
                 console.error("Error de inicio de sesión:", error);
                 loginError.textContent = "Error al ingresar. Verifique la conexión.";
@@ -166,9 +184,7 @@
         window.logout = async function() {
             try {
                 await signOut(auth);
-                mainContent.classList.add('hidden');
-                moduleViewer.classList.add('hidden');
-                loginOverlay.classList.remove('hidden');
+                // onAuthStateChanged se encargará de mostrar/ocultar los elementos
             } catch (error) {
                 console.error("Error al cerrar sesión:", error);
                 alert("No se pudo cerrar la sesión. Inténtelo de nuevo.");
@@ -179,18 +195,18 @@
          * Muestra el visor del módulo con la URL especificada.
          */
         window.showModule = function(url) {
-            mainContent.classList.add('hidden');
+            mainContent.style.display = 'none';
             moduleFrame.src = url;
-            moduleViewer.classList.remove('hidden');
+            moduleViewer.style.display = 'flex';
         }
 
         /**
          * Oculta el visor del módulo y muestra la página principal.
          */
         window.goHome = function() {
-            moduleViewer.classList.add('hidden');
+            moduleViewer.style.display = 'none';
             moduleFrame.src = 'about:blank'; // Detiene la carga del iframe
-            mainContent.classList.remove('hidden');
+            mainContent.style.display = 'block';
         }
 
         /**
