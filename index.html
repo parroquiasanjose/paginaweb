@@ -146,7 +146,7 @@
                 // Usuario está logueado
                 loginOverlay.style.display = 'none';
                 mainContent.style.display = 'block';
-                moduleViewer.style.display = 'none'; // Asegurarse que el visor de módulo esté oculto
+                goHome(); // Vuelve a la página principal si está viendo un módulo
             } else {
                 // Usuario no está logueado
                 loginOverlay.style.display = 'flex';
@@ -192,11 +192,13 @@
         }
 
         /**
-         * Muestra el visor del módulo con la URL especificada.
+         * Muestra el visor del módulo con la URL especificada, forzando la recarga.
+         * @param {string} url - La URL del módulo a cargar en el iframe.
          */
         window.showModule = function(url) {
             mainContent.style.display = 'none';
-            moduleFrame.src = url;
+            // Se añade un timestamp a la URL para evitar la caché del navegador
+            moduleFrame.src = url + '?t=' + new Date().getTime();
             moduleViewer.style.display = 'flex';
         }
 
