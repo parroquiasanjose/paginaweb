@@ -1,115 +1,16 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Parroquia San José</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* Estilo personalizado para usar la fuente Inter */
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        /* Efecto de gradiente sutil para el fondo oscuro */
-        .dark-gradient-bg {
-            background-color: #1e293b; /* slate-800 */
-            background-image: radial-gradient(circle at top left, rgba(51, 65, 85, 0.8), transparent 50%), radial-gradient(circle at bottom right, rgba(30, 41, 59, 0.8), transparent 50%);
-        }
-        /* Ocultar elementos por defecto para evitar parpadeos */
-        .hidden-by-default {
-            display: none;
-        }
-    </style>
-</head>
-<body class="dark-gradient-bg min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8">
-
-    <div id="login-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-900 bg-opacity-90 backdrop-blur-sm hidden-by-default">
-        <div class="w-full max-w-sm p-8 bg-slate-800 rounded-2xl shadow-2xl text-center">
-            <h2 class="text-3xl font-bold text-slate-100 mb-2">Acceso Parroquial</h2>
-            <p class="text-slate-400 mb-6">Presiona para continuar</p>
-            <button id="login-button" onclick="login()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-5 rounded-lg transition-all duration-300 shadow-lg hover:shadow-blue-500/50 transform hover:-translate-y-1">
-                Ingresar
-            </button>
-            <p id="login-error" class="text-red-400 mt-4 text-sm h-5"></p>
-        </div>
-    </div>
-
-    <div id="main-content" class="hidden-by-default w-full max-w-5xl mx-auto">
-        <header class="relative text-center mb-10">
-            <h1 class="text-4xl sm:text-5xl font-bold text-slate-100">Parroquia San José</h1>
-            <p id="datetime-display" class="mt-3 text-lg text-slate-400"></p>
-            <button id="logout-button" onclick="logout()" class="absolute top-0 right-0 bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 shadow-md">
-                Cerrar Sesión
-            </button>
-        </header>
-
-        <main class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-
-            <div onclick="showModule('https://parroquiasanjose.github.io/gestionparroquial/')" class="cursor-pointer block group p-6 bg-slate-800 rounded-xl shadow-lg shadow-black/20 hover:shadow-blue-500/30 hover:-translate-y-1 transition-all duration-300 ease-in-out border border-slate-700 hover:border-blue-500">
-                <div class="flex flex-col items-center text-center">
-                    <div class="mb-4 p-3 bg-slate-700 rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-card-checklist text-blue-400" viewBox="0 0 16 16"><path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/><path d="M7 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0zM7 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 0 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0z"/></svg>
-                    </div>
-                    <h2 class="text-xl font-semibold text-slate-200">Gestión Parroquial</h2>
-                </div>
-            </div>
-
-            <div onclick="showModule('https://parroquiasanjose.github.io/Colectas-Parroquia-San-Jose/')" class="cursor-pointer block group p-6 bg-slate-800 rounded-xl shadow-lg shadow-black/20 hover:shadow-green-500/30 hover:-translate-y-1 transition-all duration-300 ease-in-out border border-slate-700 hover:border-green-500">
-                <div class="flex flex-col items-center text-center">
-                    <div class="mb-4 p-3 bg-slate-700 rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-box2-heart text-green-400" viewBox="0 0 16 16"><path d="M8 7.982C9.664 6.309 13.825 9.236 8 13 2.175 9.236 6.336 6.31 8 7.982Z"/><path d="M3.75 0a1 1 0 0 0-.8.4L.1 4.2a.5.5 0 0 0 .4.8L4.25 5a1 1 0 0 0 .8-.4L8.9 1.4a.5.5 0 0 0-.4-.8L4.75 0a1 1 0 0 0-1 0ZM11.25 0a1 1 0 0 0-1 0L7.1 1.4a.5.5 0 0 0-.4.8l3.75.4a1 1 0 0 0 .8-.4l3.75-3.8a.5.5 0 0 0 .4-.8L12.05.4a1 1 0 0 0-.8-.4Z"/></svg>
-                    </div>
-                    <h2 class="text-xl font-semibold text-slate-200">Colectas</h2>
-                </div>
-            </div>
-
-            <div onclick="showModule('https://parroquiasanjose.github.io/bonos/')" class="cursor-pointer block group p-6 bg-slate-800 rounded-xl shadow-lg shadow-black/20 hover:shadow-yellow-500/30 hover:-translate-y-1 transition-all duration-300 ease-in-out border border-slate-700 hover:border-yellow-500">
-                <div class="flex flex-col items-center text-center">
-                    <div class="mb-4 p-3 bg-slate-700 rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-ticket-perforated text-yellow-400" viewBox="0 0 16 16"><path d="M4 4.85v.9h1v-.9H4Zm7 0v.9h1v-.9h-1Zm-7 1.8v.9h1v-.9H4Zm7 0v.9h1v-.9h-1Zm-7 1.8v.9h1v-.9H4Zm7 0v.9h1v-.9h-1Zm-7 1.8v.9h1v-.9H4Zm7 0v.9h1v-.9h-1Z"/><path d="M1.5 3A1.5 1.5 0 0 0 0 4.5V6a.5.5 0 0 0 .5.5 1.5 1.5 0 1 1 0 3 .5.5 0 0 0-.5.5v1.5A1.5 1.5 0 0 0 1.5 13h13a1.5 1.5 0 0 0 1.5-1.5V10a.5.5 0 0 0-.5-.5 1.5 1.5 0 1 1 0-3A.5.5 0 0 0 16 6V4.5A1.5 1.5 0 0 0 14.5 3h-13ZM1 4.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 .5.5v1.05a2.5 2.5 0 0 0 0 4.9v1.05a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-1.05a2.5 2.5 0 0 0 0-4.9V4.5Z"/></svg>
-                    </div>
-                    <h2 class="text-xl font-semibold text-slate-200">Bonos "Sembradores de Esperanza"</h2>
-                </div>
-            </div>
-
-            <div onclick="showModule('https://parroquiasanjose.github.io/secretariaparroquial/')" class="cursor-pointer block group p-6 bg-slate-800 rounded-xl shadow-lg shadow-black/20 hover:shadow-purple-500/30 hover:-translate-y-1 transition-all duration-300 ease-in-out border border-slate-700 hover:border-purple-500">
-                <div class="flex flex-col items-center text-center">
-                    <div class="mb-4 p-3 bg-slate-700 rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-lines-fill text-purple-400" viewBox="0 0 16 16"><path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5zm.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1h-4zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2zm0 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2z"/></svg>
-                    </div>
-                    <h2 class="text-xl font-semibold text-slate-200">Secretaría</h2>
-                </div>
-            </div>
-
-        </main>
-    </div>
-    
-    <div id="module-viewer" class="hidden-by-default fixed inset-0 z-50 flex flex-col bg-slate-900 p-4 gap-4">
-        <div class="flex-shrink-0 w-full text-left">
-            <button onclick="goHome()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-5 rounded-lg transition-colors duration-300 shadow-md">
-                &larr; Volver al Inicio
-            </button>
-        </div>
-        <iframe id="module-frame" class="w-full h-full flex-grow bg-white rounded-lg shadow-xl border border-slate-700" src="about:blank"></iframe>
-    </div>
-
-
-    <script type="module">
+<script type="module">
         // Importar funciones de Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
         // Configuración de Firebase
         const firebaseConfig = {
-          apiKey: "AIzaSyClMS_Z91iHXCNcX96pADWZMT5OSo0K9Ao",
-          authDomain: "paginawebparroquia-ced15.firebaseapp.com",
-          projectId: "paginawebparroquia-ced15",
-          storageBucket: "paginawebparroquia-ced15.appspot.com",
-          messagingSenderId: "985514123567",
-          appId: "1:985514123567:web:0579cd11eeecd9a81881da"
+            apiKey: "AIzaSyClMS_Z91iHXCNcX96pADWZMT5OSo0K9Ao",
+            authDomain: "paginawebparroquia-ced15.firebaseapp.com",
+            projectId: "paginawebparroquia-ced15",
+            storageBucket: "paginawebparroquia-ced15.appspot.com",
+            messagingSenderId: "985514123567",
+            appId: "1:985514123567:web:0579cd11eeecd9a81881da"
         };
 
         // Inicializar Firebase
@@ -128,15 +29,23 @@
         // --- Manejador del estado de autenticación ---
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // Usuario está logueado
-                loginOverlay.style.display = 'none';
-                mainContent.style.display = 'block';
-                goHome(); // Vuelve a la página principal si está viendo un módulo
+                // Usuario está logueado. Verificamos si estaba viendo un módulo.
+                const lastModuleUrl = sessionStorage.getItem('currentModuleUrl');
+                if (lastModuleUrl) {
+                    // Si hay una URL guardada, la mostramos en lugar del menú principal.
+                    showModule(lastModuleUrl);
+                } else {
+                    // Si no, mostramos el menú principal.
+                    loginOverlay.style.display = 'none';
+                    mainContent.style.display = 'block';
+                    moduleViewer.style.display = 'none';
+                }
             } else {
                 // Usuario no está logueado
                 loginOverlay.style.display = 'flex';
                 mainContent.style.display = 'none';
                 moduleViewer.style.display = 'none';
+                sessionStorage.removeItem('currentModuleUrl'); // Limpiamos por si acaso
             }
         });
 
@@ -167,6 +76,8 @@
          * Cierra la sesión del usuario.
          */
         window.logout = async function() {
+            // Limpiamos la URL del módulo guardada al cerrar sesión.
+            sessionStorage.removeItem('currentModuleUrl');
             try {
                 await signOut(auth);
                 // onAuthStateChanged se encargará de mostrar/ocultar los elementos
@@ -177,10 +88,13 @@
         }
 
         /**
-         * Muestra el visor del módulo con la URL especificada, forzando la recarga.
+         * Muestra el visor del módulo y guarda la URL en sessionStorage.
          * @param {string} url - La URL del módulo a cargar en el iframe.
          */
         window.showModule = function(url) {
+            // Guardamos la URL del módulo actual en la sesión del navegador.
+            sessionStorage.setItem('currentModuleUrl', url);
+            
             mainContent.style.display = 'none';
             // Se añade un timestamp a la URL para evitar la caché del navegador
             moduleFrame.src = url + '?t=' + new Date().getTime();
@@ -188,9 +102,12 @@
         }
 
         /**
-         * Oculta el visor del módulo y muestra la página principal.
+         * Oculta el visor del módulo, limpia sessionStorage y muestra la página principal.
          */
         window.goHome = function() {
+            // Eliminamos la URL guardada porque volvemos al inicio.
+            sessionStorage.removeItem('currentModuleUrl');
+
             moduleViewer.style.display = 'none';
             moduleFrame.src = 'about:blank'; // Detiene la carga del iframe
             mainContent.style.display = 'block';
@@ -213,6 +130,3 @@
         updateDateTime();
         setInterval(updateDateTime, 60000);
     </script>
-
-</body>
-</html>
