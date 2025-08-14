@@ -18,32 +18,16 @@
             background-color: #1e293b; /* slate-800 */
             background-image: radial-gradient(circle at top left, rgba(51, 65, 85, 0.8), transparent 50%), radial-gradient(circle at bottom right, rgba(30, 41, 59, 0.8), transparent 50%);
         }
-        /* Ocultar elementos por defecto para evitar parpadeos */
-        .hidden-by-default {
-            display: none;
-        }
+        /* La clase 'hidden-by-default' ya no es necesaria para el control inicial */
     </style>
 </head>
 <body class="dark-gradient-bg min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8">
 
-    <div id="login-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-900 bg-opacity-90 backdrop-blur-sm hidden-by-default">
-        <div class="w-full max-w-sm p-8 bg-slate-800 rounded-2xl shadow-2xl text-center">
-            <h2 class="text-3xl font-bold text-slate-100 mb-2">Acceso Parroquial</h2>
-            <p class="text-slate-400 mb-6">Presiona para continuar</p>
-            <button id="login-button" onclick="login()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-5 rounded-lg transition-all duration-300 shadow-lg hover:shadow-blue-500/50 transform hover:-translate-y-1">
-                Ingresar
-            </button>
-            <p id="login-error" class="text-red-400 mt-4 text-sm h-5"></p>
-        </div>
-    </div>
-
-    <div id="main-content" class="hidden-by-default w-full max-w-5xl mx-auto">
+    <!-- Se ha eliminado la clase 'hidden-by-default' para un control más fiable con JS -->
+    <div id="main-content" class="w-full max-w-5xl mx-auto">
         <header class="relative text-center mb-10">
             <h1 class="text-4xl sm:text-5xl font-bold text-slate-100">Parroquia San José</h1>
             <p id="datetime-display" class="mt-3 text-lg text-slate-400"></p>
-            <button id="logout-button" onclick="logout()" class="absolute top-0 right-0 bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 shadow-md">
-                Cerrar Sesión
-            </button>
         </header>
 
         <main class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -87,7 +71,8 @@
         </main>
     </div>
     
-    <div id="module-viewer" class="hidden-by-default fixed inset-0 z-50 flex flex-col bg-slate-900 p-4 gap-4">
+    <!-- Se ha eliminado la clase 'hidden-by-default' para un control más fiable con JS -->
+    <div id="module-viewer" class="fixed inset-0 z-50 flex flex-col bg-slate-900 p-4 gap-4">
         <div class="flex-shrink-0 w-full text-left">
             <button onclick="goHome()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-5 rounded-lg transition-colors duration-300 shadow-md">
                 &larr; Volver al Inicio
@@ -97,94 +82,33 @@
     </div>
 
 
-    <script type="module">
-        // Importar funciones de Firebase
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-
-        // Configuración de Firebase
-        const firebaseConfig = {
-          apiKey: "AIzaSyClMS_Z91iHXCNcX96pADWZMT5OSo0K9Ao",
-          authDomain: "paginawebparroquia-ced15.firebaseapp.com",
-          projectId: "paginawebparroquia-ced15",
-          storageBucket: "paginawebparroquia-ced15.appspot.com",
-          messagingSenderId: "985514123567",
-          appId: "1:985514123567:web:0579cd11eeecd9a81881da"
-        };
-
-        // Inicializar Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        
+    <script>
         // --- Referencias a los elementos del DOM ---
-        const loginOverlay = document.getElementById('login-overlay');
-        const loginButton = document.getElementById('login-button');
-        const loginError = document.getElementById('login-error');
         const mainContent = document.getElementById('main-content');
         const moduleViewer = document.getElementById('module-viewer');
         const moduleFrame = document.getElementById('module-frame');
         const dateTimeDisplay = document.getElementById('datetime-display');
-
-        // --- Manejador del estado de autenticación ---
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                // Usuario está logueado
-                loginOverlay.style.display = 'none';
-                mainContent.style.display = 'block';
-                goHome(); // Vuelve a la página principal si está viendo un módulo
-            } else {
-                // Usuario no está logueado
-                loginOverlay.style.display = 'flex';
-                mainContent.style.display = 'none';
-                moduleViewer.style.display = 'none';
-            }
-        });
-
-        /**
-         * Inicia sesión con las credenciales predefinidas.
-         */
-        window.login = async function() {
-            const email = "adanrdmato@gmail.com";
-            const password = "sanjose2025";
-            
-            loginButton.disabled = true;
-            loginButton.textContent = "Ingresando...";
-            loginError.textContent = "";
-
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-                // onAuthStateChanged se encargará de mostrar/ocultar los elementos
-            } catch (error) {
-                console.error("Error de inicio de sesión:", error);
-                loginError.textContent = "Error al ingresar. Verifique la conexión.";
-            } finally {
-                loginButton.disabled = false;
-                loginButton.textContent = "Ingresar";
-            }
-        }
         
-        /**
-         * Cierra la sesión del usuario.
-         */
-        window.logout = async function() {
-            try {
-                await signOut(auth);
-                // onAuthStateChanged se encargará de mostrar/ocultar los elementos
-            } catch (error) {
-                console.error("Error al cerrar sesión:", error);
-                alert("No se pudo cerrar la sesión. Inténtelo de nuevo.");
-            }
-        }
+        // **CORRECCIÓN**: Ocultar ambos contenedores principales con JS al inicio.
+        // Esto evita problemas de temporización y asegura que el script tiene el control.
+        mainContent.style.display = 'none';
+        moduleViewer.style.display = 'none';
 
         /**
-         * Muestra el visor del módulo con la URL especificada, forzando la recarga.
+         * Muestra el visor del módulo con la URL especificada.
          * @param {string} url - La URL del módulo a cargar en el iframe.
+         * @param {boolean} [saveState=true] - Si se debe guardar la URL en sessionStorage.
          */
-        window.showModule = function(url) {
+        window.showModule = function(url, saveState = true) {
             mainContent.style.display = 'none';
-            // Se añade un timestamp a la URL para evitar la caché del navegador
-            moduleFrame.src = url + '?t=' + new Date().getTime();
+            // Se añade un timestamp para evitar la caché del iframe
+            moduleFrame.src = url.includes('?') ? url + '&t=' + new Date().getTime() : url + '?t=' + new Date().getTime();
             moduleViewer.style.display = 'flex';
+            
+            // Guardar la URL en el almacenamiento de la sesión para persistir el estado
+            if (saveState) {
+                sessionStorage.setItem('currentModuleUrl', url);
+            }
         }
 
         /**
@@ -194,6 +118,9 @@
             moduleViewer.style.display = 'none';
             moduleFrame.src = 'about:blank'; // Detiene la carga del iframe
             mainContent.style.display = 'block';
+            
+            // Eliminar la URL del almacenamiento al volver al inicio
+            sessionStorage.removeItem('currentModuleUrl');
         }
 
         /**
@@ -209,9 +136,27 @@
             dateTimeDisplay.textContent = `${formattedDate} | ${timeString}`;
         }
 
+        /**
+         * Lógica de inicialización de la vista.
+         * Decide qué contenedor mostrar al cargar la página.
+         */
+        function initializeView() {
+            const savedUrl = sessionStorage.getItem('currentModuleUrl');
+            if (savedUrl) {
+                // Si hay una URL guardada, muestra ese módulo directamente.
+                showModule(savedUrl, false);
+            } else {
+                // Si no, muestra el menú principal.
+                mainContent.style.display = 'block';
+            }
+        }
+
         // --- Inicialización ---
         updateDateTime();
-        setInterval(updateDateTime, 60000);
+        setInterval(updateDateTime, 60000); // Actualiza la hora cada minuto
+        
+        // Ejecutar la lógica de la vista para mostrar el contenido correcto.
+        initializeView();
     </script>
 
 </body>
